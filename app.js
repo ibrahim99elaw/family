@@ -27,12 +27,24 @@ function profile(p) {
   <p style="text-align:center"><a class="chip" href="#${p.id}">🌳 شجرة ${esc(p.name)}</a></p>\n  ${p.bio ? `<div class="card"><h3>نبذة</h3><p>${esc(p.bio)}</p></div>` : ''}
   ${sec('الأب', [p.fatherId])}${sec('الأم', [p.motherId])}${sec(p.gender === 'f' ? 'الزوج' : 'الزوجة', p.spouseIds || [])}${sec('الأبناء', kids)}`;
 }
+// تسلسل مختصر: لو الطريق بيطلع لأب/أم وينزل لأخ/أخت، نختصره (أمه ← أختها ← ابنها)
+function chain(path) {
+  const T = path.slice(1), out = []; let prev = P[path[0].id];
+  for (let i = 0; i < T.length; i++) {
+    let k = T[i].t, node = P[T[i].id];
+    if ((k === 'f' || k === 'm') && T[i + 1] && T[i + 1].t === 'd') { node = P[T[i + 1].id]; k = 'b'; i++; }
+    const m = node.gender === 'm', suf = prev.gender === 'f' ? 'ها' : 'ه';
+    const w = { f: 'أبو', m: 'أم', d: m ? 'ابن' : 'بنت', b: m ? 'أخو' : 'أخت', s: m ? 'زوج' : 'زوجت' }[k];
+    out.push(w + suf + ' ' + link(node.id)); prev = node;
+  }
+  return out;
+}
 function calc() {
   const a = byName($('#a').value), b = byName($('#b').value), o = $('#out');
   if (!a || !b) return o.innerHTML = '<p class="err">اختار الاسمين من القائمة</p>';
   const path = findPath(P, a.id, b.id);
   if (!path) return o.innerHTML = '<p class="err">مفيش صلة مسجّلة بينهم</p>';
-  const steps = path.slice(1).map(x => { const g = P[x.id].gender === 'm'; return (x.t === 's' ? (g ? 'زوجها' : 'زوجته') : x.t === 'd' ? (g ? 'ابنه' : 'بنته') : x.t === 'f' ? 'أبوه' : 'أمه') + ' ' + link(x.id); });
+  const steps = chain(path);
   o.innerHTML = `<div class="res"><p>${esc(b.name)} هو/هي</p><h2>${term(P, path)} ${esc(a.name)}</h2></div><div class="chain">${link(a.id)}${steps.map(s => `<i>←</i>${s}`).join('')}</div>`;
 }
 $('#go').onclick = calc;
