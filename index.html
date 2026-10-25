@@ -1,10 +1,13 @@
 <!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>شجرة العائلة</title><link rel="stylesheet" href="style.css"></head><body>
+<div id="hero"><div id="slides"></div><div class="hshade"></div>
+<div class="hc"><h1>🌳 شجرة العائلة</h1><p id="cap"></p>
+<div class="hb"><a class="hbtn" href="tree.html">🌲 شجرة العائلة</a><button class="hbtn g" id="hs">🔍 ابدأ البحث</button></div><div id="dots"></div></div></div>
 <h1>🌳 شجرة العائلة</h1>
-<p style="text-align:center"><a class="chip" href="tree.html">عرض الشجرة كاملة 🌲</a></p>
+<p style="text-align:center"><a class="chip" href="tree.html">عرض الشجرة كاملة 🌲</a> <a class="chip" href="#" onclick="showHero(true);return false">🏠 الواجهة</a></p>
 <div class="card"><h3>افتح صفحة شخص</h3><input id="s" list="names" placeholder="اكتب الاسم واختاره"></div>
 <div id="profile"></div>
 <div class="card"><h3>حاسبة صلة القرابة</h3><input id="a" list="names" placeholder="الشخص الأول"><input id="b" list="names" placeholder="الشخص التاني"><button id="go">اعرف صلة القرابة</button><div id="out"></div></div>
 <datalist id="names"></datalist>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script><script src="kinship.js"></script><script src="app.js"></script></body></html>
+<script src="firebase-config.js"></script><script src="treelib.js"></script><script src="kinship.js"></script><script src="hero.js"></script><script src="app.js"></script></body></html>
