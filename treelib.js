@@ -9,3 +9,12 @@ function unit(p, stack = [], self) {
   const ks = Object.values(P).filter(x => !used.includes(x.id) && (ids.includes(x.fatherId) || ids.includes(x.motherId))).sort((a, b) => bd(a).localeCompare(bd(b)));
   return `<li><div class="unit">${[p, ...sp].map(x => card(x, x.id === self)).join('<span class="lv">♥</span>')}</div>${ks.length ? `<ul>${ks.map(k => unit(k, used, self)).join('')}</ul>` : ''}</li>`;
 }
+
+// يكمّل بيانات الأزواج: الربط من الطرفين + الأب والأم لأي ابن يتعاملوا كزوجين
+function normalize() {
+  const add = (a, b) => { const s = P[a].spouseIds = P[a].spouseIds || []; if (!s.includes(b)) s.push(b); };
+  Object.values(P).forEach(p => {
+    (p.spouseIds || []).slice().forEach(s => P[s] && add(s, p.id));
+    if (P[p.fatherId] && P[p.motherId]) { add(p.fatherId, p.motherId); add(p.motherId, p.fatherId); }
+  });
+}

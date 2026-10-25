@@ -5,6 +5,7 @@ const avatar = p => p.photo ? `<img src="${esc(p.photo)}">` : `<span>${esc((p.na
 async function init() {
   heroInit();
   (await db.collection('people').get()).forEach(d => P[d.id] = { id: d.id, ...d.data() });
+  normalize();
   $('#names').innerHTML = Object.values(P).map(p => `<option value="${esc(p.fullName)}">`).join('');
   route(); addEventListener('hashchange', route);
 }
