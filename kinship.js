@@ -29,7 +29,7 @@ function term(P, path) {
   if (ts.includes('s')) return ts === 's' ? (m ? 'زوج' : 'زوجة') : 'قرابة مصاهرة (بالزواج)';
   if (!/^[fm]*d*$/.test(ts)) return 'قريب';
   const u = ts.replace(/d/g, '').length, d = ts.length - u, s = ts[0] === 'f';
-  const mid = P[path[u + 1]?.id], midM = mid && mid.gender === 'm';
+  const mid = P[path[u + 1] ? path[u + 1].id : ''], midM = mid && mid.gender === 'm';
   const unc = g => s ? (g ? 'عم' : 'عمة') : (g ? 'خال' : 'خالة');
   if (!d) return u === 1 ? (m ? 'أب' : 'أم') : u === 2 ? (m ? 'جد' : 'جدة') + (s ? ' لأب' : ' لأم') : (m ? 'جد' : 'جدة') + ' من الدرجة ' + u;
   if (!u) return d === 1 ? (m ? 'ابن' : 'بنت') : d === 2 ? (m ? 'حفيد' : 'حفيدة') : (m ? 'حفيد' : 'حفيدة') + ' من الجيل ' + d;

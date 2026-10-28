@@ -21,11 +21,11 @@ function branch(p) {
   <a class="chip" href="#${p.id}/details">📄 تفاصيل ${esc(p.name)}</a></div>`;
 }
 function profile(p) {
-  const kids = Object.values(P).filter(x => x.fatherId === p.id || x.motherId === p.id).map(k => k.id);
+  const kids = Object.values(P).filter(x => x.fatherId === p.id || x.motherId === p.id).sort((a, b) => bk(a) - bk(b)).map(k => k.id), sibs = sibsOf(p).map(k => k.id);
   const sec = (t, a) => (a = a.filter(x => P[x])).length ? `<div class="card"><h3>${t}</h3>${a.map(link).join('')}</div>` : '';
   return `<div class="hero"><div class="av">${avatar(p)}</div><h2>${esc(p.fullName)}</h2>${p.nickname ? `<p class="nick">«${esc(p.nickname)}»</p>` : ''}<p>${[p.gender === 'f' ? 'أنثى' : 'ذكر', p.birth && 'مواليد ' + esc(p.birth), esc(p.job)].filter(Boolean).join(' • ')}</p></div>
   <p style="text-align:center"><a class="chip" href="#${p.id}">🌳 شجرة ${esc(p.name)}</a></p>\n  ${p.bio ? `<div class="card"><h3>نبذة</h3><p>${esc(p.bio)}</p></div>` : ''}
-  ${sec('الأب', [p.fatherId])}${sec('الأم', [p.motherId])}${sec(p.gender === 'f' ? 'الزوج' : 'الزوجة', p.spouseIds || [])}${sec('الأبناء', kids)}`;
+  ${sec('الأب', [p.fatherId])}${sec('الأم', [p.motherId])}${sec('الإخوة والأخوات', sibs)}${sec(p.gender === 'f' ? 'الزوج' : 'الزوجة', p.spouseIds || [])}${sec('الأبناء', kids)}<div class="dl"><button data-dl="card" data-id="${p.id}">⬇️ تحميل الكارت</button><button data-dl="qr" data-id="${p.id}">⬇️ تحميل QR</button><button class="sec" data-dl="card" data-share="1" data-id="${p.id}">📤 مشاركة الكارت</button></div>`;
 }
 // تسلسل مختصر: لو الطريق بيطلع لأب/أم وينزل لأخ/أخت، نختصره (أمه ← أختها ← ابنها)
 function chain(path) {

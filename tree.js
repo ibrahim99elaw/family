@@ -1,7 +1,7 @@
 let P = {}, R = [], mode = 'T', nav = []; const $ = s => document.querySelector(s);
 try { mode = localStorage.getItem('ftmode') === 'C' ? 'C' : 'T'; } catch (e) { }
 const fail = m => { const t = $(mode === 'T' ? '#tree' : '#cards'); t.innerHTML = '<p class="err"></p>'; t.querySelector('.err').textContent = m; };
-const kidsOf = p => { const ids = [p.id, ...(p.spouseIds || [])]; return Object.values(P).filter(x => !ids.includes(x.id) && (ids.includes(x.fatherId) || ids.includes(x.motherId))).sort((a, b) => bd(a).localeCompare(bd(b))); };
+const kidsOf = p => { const ids = [p.id, ...(p.spouseIds || [])]; return Object.values(P).filter(x => !ids.includes(x.id) && (ids.includes(x.fatherId) || ids.includes(x.motherId))).sort((a, b) => bk(a) - bk(b)); };
 const bcard = (p, big) => `<div class="bc ${p.gender === 'f' ? 'f' : 'm'}${big ? ' big' : ''}" data-go="${p.id}"><div class="ba">${p.photo ? `<img src="${esc(p.photo)}">` : esc((p.name || '?')[0])}</div><b>${esc(p.name)}</b>${p.nickname ? `<small>«${esc(p.nickname)}»</small>` : ''}<div class="bb"><button data-peek="${p.id}">👁 لمحة</button><button data-go="${p.id}">👨‍👩‍👧 العائلة</button></div></div>`;
 function showCards() {
   const c = $('#cards'), cur = nav.length ? P[nav[nav.length - 1]] : null;
@@ -15,7 +15,7 @@ function peek(id) {
   const row = (t, v) => v ? `<p><span>${t}</span>${v}</p>` : '';
   const m = document.createElement('div'); m.className = 'md';
   m.innerHTML = `<div class="mb"><button class="x">✕</button><div class="ba lg">${p.photo ? `<img src="${esc(p.photo)}">` : esc((p.name || '?')[0])}</div><h2 style="margin:6px 0">${esc(p.fullName)}</h2>${p.nickname ? `<p class="nick" style="text-align:center">«${esc(p.nickname)}»</p>` : ''}
-  ${row('الأب', nm(P[p.fatherId]))}${row('الأم', nm(P[p.motherId]))}${row(p.gender === 'f' ? 'الزوج' : 'الزوجة', sp.map(nm).join('، '))}${row('الأبناء', ks.map(nm).join('، '))}${row('الميلاد', esc(p.birth))}${row('الوظيفة', esc(p.job))}${p.bio ? `<p class="bio">${esc(p.bio)}</p>` : ''}
+  ${row('الأب', nm(P[p.fatherId]))}${row('الأم', nm(P[p.motherId]))}${row(p.gender === 'f' ? 'الزوج' : 'الزوجة', sp.map(nm).join('، '))}${row('الإخوة', sibsOf(p).map(nm).join('، '))}${row('الأبناء', ks.map(nm).join('، '))}${row('الميلاد', esc(p.birth))}${row('الوظيفة', esc(p.job))}${p.bio ? `<p class="bio">${esc(p.bio)}</p>` : ''}
   <a class="hbtn g" style="margin-top:10px" href="index.html#${p.id}/details">📄 الصفحة الكاملة</a></div>`;
   m.onclick = e => { if (e.target === m || e.target.classList.contains('x')) m.remove(); };
   document.body.appendChild(m);
@@ -38,10 +38,11 @@ $('#cards').onclick = e => {
   try {
     (await db.collection('people').get()).forEach(d => P[d.id] = { id: d.id, ...d.data() });
     normalize();
-    const hasPar = p => P[p.fatherId] || P[p.motherId], skip = new Set(), all = Object.values(P).sort((a, b) => bd(a).localeCompare(bd(b)));
+    const hasPar = p => P[p.fatherId] || P[p.motherId], skip = new Set(), all = Object.values(P).sort((a, b) => bk(a) - bk(b));
     R = all.filter(p => !hasPar(p) && !(p.spouseIds || []).some(s => P[s] && hasPar(P[s])))
       .filter(p => { if (skip.has(p.id)) return false; (p.spouseIds || []).forEach(s => skip.add(s)); return true; });
-    if (!R.length) R = all.slice(0, 1);
+    R = R.map(p => p.gender === 'f' ? ((p.spouseIds || []).map(i => P[i]).find(s => s && s.gender === 'm' && !hasPar(s)) || p) : p).sort((a, b) => bk(a) - bk(b));
+    if (!R.length) R = [all.find(p => p.gender === 'm') || all[0]].filter(Boolean);
     if (R.length > 1) { $('#root').hidden = false; $('#root').innerHTML = R.map((p, i) => `<option value="${i}">فرع: ${esc(p.fullName)}</option>`).join(''); $('#root').onchange = () => { nav = []; draw(); }; }
     draw();
   } catch (e) { fail('تعذر تحميل البيانات: ' + e.message); }
