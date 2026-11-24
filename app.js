@@ -42,10 +42,10 @@ function chain(path) {
 function calc() {
   const a = byName($('#a').value), b = byName($('#b').value), o = $('#out');
   if (!a || !b) return o.innerHTML = '<p class="err">اختار الاسمين من القائمة</p>';
-  const path = findPath(P, a.id, b.id);
-  if (!path) return o.innerHTML = '<p class="err">مفيش صلة مسجّلة بينهم</p>';
-  const steps = chain(path);
-  o.innerHTML = `<div class="res"><p>${esc(b.name)} هو/هي</p><h2>${term(P, path)} ${esc(a.name)}</h2></div><div class="chain">${link(a.id)}${steps.map(s => `<i>←</i>${s}`).join('')}</div>`;
+  if (a.id === b.id) return o.innerHTML = '<p class="err">ده نفس الشخص</p>';
+  const rels = relations(P, a.id, b.id), is = b.gender === 'm' ? 'هو' : 'هي';
+  if (!rels.length) return o.innerHTML = '<p class="err">مفيش صلة مسجّلة بينهم</p>';
+  o.innerHTML = rels.map((r, i) => `<div class="${i ? 'alt' : 'res'}"><p>${i ? 'وكمان ' + is : esc(b.name) + ' ' + is}</p><h2>${esc(r.label)} ${esc(a.name)}</h2><div class="chain">${link(a.id)}${chain(r.path).map(s => `<i>←</i>${s}`).join('')}</div></div>`).join('');
 }
 $('#go').onclick = calc;
 $('#s').onchange = e => { const p = byName(e.target.value); if (p) { location.hash = p.id; e.target.value = ''; } };
