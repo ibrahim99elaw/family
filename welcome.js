@@ -5,7 +5,7 @@
   const btn = document.createElement('button'); btn.id = 'snd'; btn.textContent = '⏳'; document.body.appendChild(btn);
   const au = new Audio(); au.loop = !!meta.loop; window.welcomeAudio = au; let ready = false;
   const label = () => { btn.textContent = !ready ? '⏳' : au.paused ? '🔊 ' + (meta.title || 'رسالة') : '⏸ ' + (meta.title || 'رسالة'); };
-  const go = () => au.play().then(() => { try { sessionStorage.setItem('welcomed', '1'); } catch (e) { } return true; }).catch(() => false);
+  const go = () => window.pAuPlaying ? Promise.resolve(false) : au.play().then(() => { try { sessionStorage.setItem('welcomed', '1'); } catch (e) { } return true; }).catch(() => false);
   au.onplay = au.onpause = au.onended = label;
   btn.onclick = () => { if (ready) au.paused ? go() : au.pause(); };
   try {

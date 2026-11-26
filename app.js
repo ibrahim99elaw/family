@@ -12,6 +12,7 @@ async function init() {
 function route() {
   const [id, mode] = location.hash.slice(1).split('/'), p = P[id];
   $('#profile').innerHTML = p ? (mode === 'details' ? profile(p) : branch(p)) : '';
+  if (p) { $('#profile').insertAdjacentHTML('afterbegin', '<div id="pau"></div>'); personAudio(p); } else stopPersonAudio();
   if (p) { showHero(false); scrollTo({ top: 0, behavior: 'smooth' }); }
 }
 function branch(p) {
