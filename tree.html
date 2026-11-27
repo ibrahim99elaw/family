@@ -4,8 +4,16 @@
 <p style="text-align:center"><a class="chip" href="index.html">← الرئيسية والبحث</a> <a class="chip" href="archive.html">🗂 الأرشيف</a></p>
 <select id="root" hidden style="max-width:420px;margin:8px auto"></select>
 <div class="seg"><button id="mT" class="on">🌲 شجرة</button><button id="mC">🗂 كروت العائلة</button></div>
+<p style="text-align:center"><button class="sec" id="prBtn" style="width:auto;padding:10px 20px">🖨️ طباعة الشجرة للتبرويز</button></p>
+<div id="prp" class="card" hidden style="max-width:460px;margin:8px auto"><h3>إعدادات الطباعة</h3>
+<input id="prT" value="شجرة العائلة" placeholder="عنوان البوستر (مثال: شجرة عائلة العو)">
+<select id="prP"><option value="A4">ورق A4</option><option value="A3" selected>ورق A3</option><option value="A2">ورق A2</option><option value="A1">ورق A1</option><option value="50x70">إطار 50×70 سم</option></select>
+<select id="prO"><option value="auto">الاتجاه: تلقائي حسب شكل الشجرة</option><option value="land">عرضي</option><option value="port">طولي</option></select>
+<select id="prB" hidden><option value="cur">الفرع المختار بس</option><option value="all">كل الفروع في بوستر واحد</option></select>
+<button id="prGo">🖨️ اطبع / احفظ PDF</button>
+<p class="hint">في نافذة الطباعة اختار نفس حجم الورق، ولو هتبعتها لمطبعة اختار "حفظ كـ PDF". الشجرة الكبيرة (أكتر من 40 شخص) الأفضل لها ورق A2 أو أكبر.</p></div>
 <div class="tw" id="tw"><div id="tree" class="tree"></div></div>
 <div id="cards"></div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script><script src="treelib.js"></script><script src="tree.js"></script></body></html>
+<script src="firebase-config.js"></script><script src="treelib.js"></script><script src="tree.js"></script><script src="qrcode.js"></script><script src="print.js"></script></body></html>
